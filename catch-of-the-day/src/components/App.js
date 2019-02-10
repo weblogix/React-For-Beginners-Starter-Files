@@ -29,7 +29,6 @@ class App extends React.Component {
     });
   }
   componentDidUpdate() {
-    console.log(this.state.order);
     localStorage.setItem(this.props.match.params.storeId, JSON.stringify(this.state.order));
   }
 
@@ -40,9 +39,7 @@ class App extends React.Component {
   addFish = fish => {
     console.log("adding a fish");
     // 1. Take a copy of the existing state
-    const fishes = {
-      ...this.state.fishes
-    };
+    const fishes = { ...this.state.fishes };
     // 2. Add our new fish to that fishes variable
     fishes[`fish${Date.now()}`] = fish;
     // 3. Set the new fishes object to state
@@ -51,69 +48,52 @@ class App extends React.Component {
     });
   };
 
+  updateFish = (key, updatedFish) => {
+    //1. take a copy of the current state
+    const fishes = { ...this.state.fishes };
+    // 2. Update that state
+    fishes[key] = updatedFish;
+    // 3. Set that to state
+    this.setState({ fishes })
+  }
+  
   loadSamplesFishes = () => {
-    this.setState({
+    this.setState({ 
       fishes: sampleFishes
     })
   }
 
   addToOrder = (key) => {
     // 1. Take a copy of state
-    const order = {
-      ...this.state.order
-    }
-    // 2. Either add to the order. or update the number in our order
+    const order = {...this.state.order}
+    // 2. Either add to the order. or update the number in our or der
     order[key] = order[key] + 1 || 1;
     // 3. Call setState to update our state object
-    this.setState({
-      order
-    })
+    this.setState({ order })
   }
   render() {
-    return ( <
-      div className = "catch-of-the-day" >
-      <
-      div className = "menu" >
-      <
-      Header tagline = "Randy is awesome"
-      age = {
-        1
-      }
-      /> <
-      ul className = "fishes" > {
-        Object.keys(this.state.fishes).map(key => ( <
-          Fish key = {
-            key
-          }
-          index = {
-            key
-          }
-          details = {
-            this.state.fishes[key]
-          }
-          addToOrder = {
-            this.addToOrder
-          }
+    return (
+      <div className="catch-of-the-day">
+        <div className="menu">
+          <Header tagline="Randy is awesome" age={1} />
+          <ul className="fishes">
+          {Object.keys(this.state.fishes).map(key => (
+            <Fish  
+            key={key} 
+            index={key}
+            details={this.state.fishes[key]} 
+            addToOrder={this.addToOrder}/>
+          ))}
+          </ul>
+        </div>
+        <Order fishes={this.state.fishes} order={this.state.order}/>
+        <Inventory 
+          addFish={this.addFish} 
+          updateFish={this.updateFish} 
+          loadSamplesFishes={this.loadSamplesFishes}
+          fishes={this.state.fishes}
           />
-        ))
-      } <
-      /ul> < /
-      div > <
-      Order fishes = {
-        this.state.fishes
-      }
-      order = {
-        this.state.order
-      }
-      /> <
-      Inventory addFish = {
-        this.addFish
-      }
-      loadSamplesFishes = {
-        this.loadSamplesFishes
-      }
-      /> < /
-      div >
+      </div>
     );
   }
 }
